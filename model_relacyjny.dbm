@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+         Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel>
+<schema name="public" protected="true" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<database name="new_database">
+</database>
+
+<table name="naukowcy">
+	<schema name="public"/>
+	<position x="446.172" y="226.337"/>
+	<column name="orcid">
+		<type name="char" length="19"/>
+	</column>
+	<column name="imie" not-null="true">
+		<type name="varchar"/>
+	</column>
+	<column name="nazwisko" not-null="true">
+		<type name="varchar"/>
+	</column>
+	<column name="telefon">
+		<type name="varchar"/>
+	</column>
+	<column name="email">
+		<type name="varchar"/>
+	</column>
+	<column name="afiliacja">
+		<type name="varchar"/>
+	</column>
+	<column name="specjalizacja">
+		<type name="varchar"/>
+	</column>
+	<column name="data_urodzenia">
+		<type name="date"/>
+	</column>
+	<constraint name="ORCID" type="pk-constr" factor="10" table="public.naukowcy">
+		<columns names="orcid" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="obserwatoria">
+	<schema name="public"/>
+	<position x="659.936" y="437.444"/>
+	<column name="id">
+		<type name="serial"/>
+	</column>
+	<column name="szerokosc_geo" not-null="true">
+		<type name="numeric"/>
+	</column>
+	<column name="dlugosc_geo" not-null="true">
+		<type name="numeric"/>
+	</column>
+	<column name="nazwa" not-null="true">
+		<type name="varchar"/>
+	</column>
+	<column name="wysokosc_npm" not-null="true">
+		<type name="numeric"/>
+	</column>
+	<column name="kraj" not-null="true">
+		<type name="varchar"/>
+	</column>
+	<constraint name="id_obserwatoria" type="pk-constr" factor="10" table="public.obserwatoria">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="szerokosc_geo_obserwatoria" type="ck-constr" table="public.obserwatoria">
+			<expression><![CDATA[szerokosc_geo > -90 AND < 90]]></expression>
+	</constraint>
+	<constraint name="dlugosc_geo_obserwatoria" type="ck-constr" table="public.obserwatoria">
+			<expression><![CDATA[dlugosc_geo > -180 AND < 180]]></expression>
+	</constraint>
+	<constraint name="nazwa_obserwatoria" type="uq-constr" factor="10" table="public.obserwatoria">
+		<columns names="nazwa" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="instytuty">
+	<schema name="public"/>
+	<position x="46.468" y="223.349"/>
+	<column name="id">
+		<type name="serial"/>
+	</column>
+	<column name="email">
+		<type name="varchar"/>
+	</column>
+	<column name="nazwa" not-null="true">
+		<type name="varchar"/>
+	</column>
+	<column name="kraj" not-null="true">
+		<type name="varchar"/>
+	</column>
+	<column name="miasto" not-null="true">
+		<type name="varchar"/>
+	</column>
+	<column name="ulica">
+		<type name="varchar"/>
+	</column>
+	<column name="nr_budynku" not-null="true">
+		<type name="varchar"/>
+	</column>
+	<column name="kod_pocztowy" not-null="true">
+		<type name="varchar"/>
+	</column>
+	<column name="data_zalozenia">
+		<type name="date"/>
+	</column>
+	<constraint name="nazwa_instytuty" type="uq-constr" factor="10" table="public.instytuty">
+		<columns names="nazwa" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="id_instytuty" type="pk-constr" factor="10" table="public.instytuty">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="teleskopy">
+	<schema name="public"/>
+	<position x="651" y="672.714"/>
+	<column name="id">
+		<type name="serial"/>
+	</column>
+	<column name="model">
+		<type name="varchar"/>
+	</column>
+	<column name="srednica_obiektywu">
+		<type name="integer"/>
+	</column>
+	<column name="ogniskowa">
+		<type name="integer"/>
+	</column>
+	<column name="powiekszenie">
+		<type name="varchar"/>
+	</column>
+	<constraint name="srednica_obiektywu_teleskopy" type="ck-constr" table="public.teleskopy">
+			<expression><![CDATA[srednica_obiektywu > 0]]></expression>
+	</constraint>
+	<constraint name="id_teleskopy" type="pk-constr" factor="10" table="public.teleskopy">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="ogniskowa_teleskopy" type="ck-constr" table="public.teleskopy">
+			<expression><![CDATA[ogniskowa > 0]]></expression>
+	</constraint>
+</table>
+
+<table name="obserwacje">
+	<schema name="public"/>
+	<position x="144.786" y="674.429"/>
+	<column name="nr_obserwacji">
+		<type name="serial"/>
+	</column>
+	<column name="data">
+		<type name="timestamptz"/>
+	</column>
+	<column name="rektascensja" not-null="true">
+		<type name="varchar"/>
+	</column>
+	<column name="deklinacja" not-null="true">
+		<type name="varchar"/>
+	</column>
+	<constraint name="id_obserwacje" type="pk-constr" factor="10" table="public.obserwacje">
+		<columns names="nr_obserwacji" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="Obserwatoria_Teleskopy" type="rel1n"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 col-indexes="5" constr-indexes="0"
+	 src-table="public.obserwatoria"
+	 dst-table="public.teleskopy"
+	 src-required="false" dst-required="false">
+	<label ref-type="name-label">
+		<position x="0" y="0"/>
+	</label>
+</relationship>
+
+<relationship name="Teleskopy_Obserwacje" type="rel1n"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 col-indexes="4" constr-indexes="1"
+	 src-table="public.teleskopy"
+	 dst-table="public.obserwacje"
+	 src-required="true" dst-required="false">
+	<label ref-type="name-label">
+		<position x="0" y="0"/>
+	</label>
+</relationship>
+
+<relationship name="instytuty_has_many_Naukowcy" type="rel1n"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 col-indexes="8" constr-indexes="1"
+	 src-table="public.instytuty"
+	 dst-table="public.naukowcy"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="Naukowcy_has_many_Obserwacje" type="rel1n"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 col-indexes="5" constr-indexes="2"
+	 src-table="public.naukowcy"
+	 dst-table="public.obserwacje"
+	 src-required="true" dst-required="false"/>
+
+<table name="ciala_niebieskie">
+	<schema name="public"/>
+	<position x="599" y="881"/>
+	<column name="id">
+		<type name="serial"/>
+	</column>
+	<column name="parametr" not-null="true">
+		<type name="varchar"/>
+	</column>
+	<column name="wartosc">
+		<type name="numeric"/>
+	</column>
+	<constraint name="id_ciala" type="pk-constr" factor="10" table="public.ciala_niebieskie">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="typy">
+	<schema name="public"/>
+	<position x="152" y="896"/>
+	<column name="nr_katalogowy">
+		<type name="varchar"/>
+	</column>
+	<column name="rodzaj" not-null="true">
+		<type name="varchar"/>
+	</column>
+	<constraint name="nr_katalogowy_typy" type="pk-constr" factor="10" table="public.typy">
+		<columns names="nr_katalogowy" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="typy_has_many_cialo_niebieskie" type="rel1n"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 col-indexes="3" constr-indexes="1"
+	 src-table="public.typy"
+	 dst-table="public.ciala_niebieskie"
+	 src-required="true" dst-required="false"/>
+
+<table name="publikacje">
+	<schema name="public"/>
+	<position x="1322" y="264"/>
+	<column name="issn">
+		<type name="char" length="14"/>
+	</column>
+	<column name="tytul_arykulu" not-null="true">
+		<type name="varchar"/>
+	</column>
+	<column name="wydawnictwo" not-null="true">
+		<type name="varchar"/>
+	</column>
+	<column name="data" not-null="true">
+		<type name="date"/>
+	</column>
+	<column name="czasopismo">
+		<type name="varchar"/>
+	</column>
+	<constraint name="issn" type="pk-constr" factor="10" table="public.publikacje">
+		<columns names="issn" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="naukowcy_publikacje">
+	<schema name="public"/>
+	<position x="825" y="288"/>
+	<column name="id">
+		<type name="serial"/>
+	</column>
+	<constraint name="id_naukowcy_publikacje" type="pk-constr" factor="100" table="public.naukowcy_publikacje">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="Naukowcy_has_many_naukowcy_publikacje" type="rel1n"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 col-indexes="1" constr-indexes="0"
+	 src-table="public.naukowcy"
+	 dst-table="public.naukowcy_publikacje"
+	 src-required="true" dst-required="false"/>
+
+<relationship name="publikacje_has_many_naukowcy_publikacje" type="rel1n"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 col-indexes="2" constr-indexes="1"
+	 src-table="public.publikacje"
+	 dst-table="public.naukowcy_publikacje"
+	 src-required="true" dst-required="false"/>
+
+<relationship name="ciala_niebieskie_obserwacje" type="rel1n"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 col-indexes="6" constr-indexes="3"
+	 src-table="public.ciala_niebieskie"
+	 dst-table="public.obserwacje"
+	 src-required="true" dst-required="false"/>
+
+</dbmodel>
